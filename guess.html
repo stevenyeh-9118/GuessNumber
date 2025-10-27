@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Guess</title>
+        <style>
+            #container {
+                width: 320px;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
+                margin-bottom: 10px;
+            }
+            .tile {
+                height: 40px;
+                background-color: #f9f9f9;
+                border: 1px solid black;
+                font-size: 15px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                border-radius: 8px;
+            }
+
+            .tile:nth-child(10) {
+                grid-column: span 3;
+            }
+
+            input {
+                width: 200px;
+                font-size: 20px;
+                text-align: center;
+            }
+            .btn {
+                font-size: 15px;
+                padding: 8px 16px;
+                background-color: coral;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+            .answer {
+                margin-top: 10px;
+                font-size: 18px;
+            }
+            .textContent {
+                font-size: 18px;
+            }
+        </style>
+    </head>
+    <body>
+        <input type="text" class="guessInput" />
+        <button class="btn guess-btn">猜!</button>
+        <button class="btn answer-btn">看答案!</button>
+        <div class="answer"></div>
+
+        <div id="container">
+            <div class="tile" data-val="1">一</div>
+            <div class="tile" data-val="2">二</div>
+            <div class="tile" data-val="3">三</div>
+            <div class="tile" data-val="4">四</div>
+            <div class="tile" data-val="5">五</div>
+            <div class="tile" data-val="6">六</div>
+            <div class="tile" data-val="7">七</div>
+            <div class="tile" data-val="8">八</div>
+            <div class="tile" data-val="9">九</div>
+            <div class="tile" data-val="0">零</div>
+        </div>
+
+        <script>
+            const answerArea = document.querySelector(".answer");
+            const guessInput = document.querySelector(".guessInput");
+            const answerBtn = document.querySelector(".answer-btn");
+            const randomNumber = Math.floor(Math.random() * 100) + 1;
+
+            let max = 100;
+            let min = 1;
+
+            const tiles = document.querySelectorAll(".tile");
+            tiles.forEach((tile) => {
+                tile.addEventListener("click", () => {
+                    const val = tile.dataset.val;
+                    if (val) guessInput.value += val;
+                });
+            });
+
+            document
+                .querySelector(".guess-btn")
+                .addEventListener("click", () => {
+                    const userGuess = Number(guessInput.value);
+
+                    if (isNaN(userGuess)) {
+                        answerArea.textContent = "請輸入有效的數字！";
+                        return;
+                    }
+
+                    if (userGuess <= min || userGuess >= max) {
+                        answerArea.textContent = `請輸入 ${min} 到 ${max} 之間的數字！`;
+                        return;
+                    }
+
+                    if (userGuess < randomNumber) {
+                        min = userGuess;
+                        answerArea.textContent = `太低了！答案在 ${min} ~ ${max} 之間 `;
+                    } else if (userGuess > randomNumber) {
+                        max = userGuess;
+                        answerArea.textContent = `太高了！答案在 ${min} ~ ${max} 之間 `;
+                    } else {
+                        answerArea.textContent = `🎉 恭喜! 答案是 ${randomNumber}!`;
+                    }
+
+                    guessInput.value = "";
+
+                    //看答案按鈕
+                    answerBtn.addEventListener("click", () => {
+                        answerArea.textContent = `答案是：${randomNumber}`;
+                    });
+                });
+        </script>
+    </body>
+</html>
